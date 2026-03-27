@@ -1,19 +1,26 @@
 Readmission-DL — City General Hospital 30-day Readmission Prediction
-Student name: Student ID: Submission date:
+Student name: Ishika Kumari 
+Student ID: 1148
+Submission date: 27/03/2026
 
 Problem
 Predict whether a patient will be readmitted within 30 days of discharge using structured clinical data from City General Hospital (3,800 training records, 950 test records).
 
-My model
-Architecture:
 
-<!-- Describe your network: layer sizes, activations, regularisation -->
-Key preprocessing decisions:
+My model______
+--Architecture:--
+ 
+I used a small PyTorch MLP because the data is tabular and the problem is binary classification. The network has two hidden layers (128 and 64 neurons), with BatchNorm, ReLU, and Dropout to keep training stable and reduce overfitting. The final layer has one output neuron, and the model was trained using BCEWithLogitsLoss. I also used early stopping based on validation loss.
 
-<!-- Summarise the most important choices — 2–3 sentences -->
-How I handled class imbalance:
+--Key preprocessing decisions:--
+ 
+I removed columns like patient_id because they act more like identifiers than useful predictive features. I also converted admission_date into calendar-based features such as month, day, and day of week to capture possible time-related patterns. To keep preprocessing clean and reusable, I used a ColumnTransformer, with median imputation + scaling for numeric features and most-frequent imputation + one-hot encoding for categorical features.
+ 
+--How I handled class imbalance:--
+ 
+I used `pos_weight` in `BCEWithLogitsLoss`, computed from the training split, so the minority class gets a stronger learning signal. On top of that, I tuned the decision threshold on the validation set to maximize minority-class F1 instead of using a fixed `0.5`, which gives a better precision-recall tradeoff for readmission prediction.
 
-<!-- What technique and why -->
+
 Results on validation set
 Metric	Value
 AUROC	
@@ -42,5 +49,3 @@ readmission-dl/
 ├── DECISIONS.md
 ├── requirements.txt
 └── README.md
-Limitations and honest assessment
-<!-- What would you improve with more time? Where might this model fail in production? -->
